@@ -1,7 +1,9 @@
 package com.salesforce.tests.morse;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Trie Node Data structure
@@ -11,12 +13,11 @@ public class TrieNode {
   
   private boolean isEndOfWord;
   
-  private Character character;
-  
-  private String word;
+  private Set<String> words;
   
   public TrieNode() {
     this.trieMap = new HashMap<>();
+    this.words = new HashSet<>();
   }
   
   public Map<Character, TrieNode> getTrieMap() {
@@ -36,19 +37,11 @@ public class TrieNode {
     this.isEndOfWord = isEndOfWord;
   }
 
-  public String getWord() {
-    return word;
+  public Set<String> getWords() {
+    return words;
   }
-
-  public void setWord(String endWord) {
-    this.word = endWord;
-  }
-
-  public Character getCharacter() {
-    return character;
-  }
-
-  public void setCharacter(Character character) {
-    this.character = character;
+  
+  public void addWord(String word) {
+    this.words.add(word);
   }
 }

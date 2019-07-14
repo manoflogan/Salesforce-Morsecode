@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Trie data structure
@@ -29,7 +30,7 @@ public class Trie {
   public void initialisePatterns(String input) {
     String[] wordToMorseCodeMapping = input.split(" ");
     String character = wordToMorseCodeMapping[0].trim();
-    String morseCode = wordToMorseCodeMapping[1].trim();
+    String morseCode = wordToMorseCodeMapping[wordToMorseCodeMapping.length - 1].trim();
     this.addPattern(character, morseCode);
   }
 
@@ -48,18 +49,21 @@ public class Trie {
         trieMap.put(c, next);
         current = next;
       }
-      current.setCharacter(charArray[i]);
     }
     current.setEndOfWord(true);
-    current.setWord(word);
+    current.addWord(word);
   }
 
   public List<String> evaluateString(String pattern) {
     String[] patternFragments = pattern.split(" ");
     List<String> words = new ArrayList<>();
     for (String patternFragment : patternFragments) {
+      patternFragment = patternFragment.trim();
+      if (patternFragment == null || patternFragment.isEmpty()) {
+        continue;
+      }
       TrieNode current = this.morseCodeTrie;
-      char[] charArray = patternFragment.trim().toCharArray();
+      char[] charArray = patternFragment.toCharArray();
       String word = getWord(charArray, "", 0, current);
       if (word != null) {
         words.add(word);
@@ -85,7 +89,8 @@ public class Trie {
       return null;
     }
     if (index == patternFragment.length) {
-      return current.getWord();
+      Set<String> words = current.getWords();
+      return words.isEmpty() ? null : words.iterator().next();
     }
     Map<Character, TrieNode> trieMap = current.getTrieMap();
     if (trieMap == null) {
@@ -113,7 +118,8 @@ public class Trie {
       return null;
     }
     if (current.isEndOfWord()) {
-      return current.getWord();
+      Set<String> words = current.getWords();
+      return words.isEmpty() ? null : words.iterator().next();
     }
     Map<Character, TrieNode> map = current.getTrieMap();
     for (Map.Entry<Character, TrieNode> entry : map.entrySet()) {
